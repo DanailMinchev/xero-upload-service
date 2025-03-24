@@ -1,6 +1,7 @@
 package com.example.xeroupload.service;
 
 import com.microsoft.playwright.Browser;
+import com.microsoft.playwright.BrowserContext;
 import com.microsoft.playwright.BrowserType;
 import com.microsoft.playwright.FileChooser;
 import com.microsoft.playwright.Locator;
@@ -76,17 +77,21 @@ public class XeroImportBankStatementService {
                                      String businessName,
                                      String businessBankAccountName) {
         try (Playwright playwright = Playwright.create()) {
-            Browser browser;
+            Browser browser = playwright.chromium().launch(
+                    new BrowserType.LaunchOptions()
+                            .setHeadless(!enableUiMode)
+                            .setSlowMo(1000)
+            );
+            BrowserContext context;
             if (enableUiMode) {
-                browser = playwright.chromium().launch(
-                        new BrowserType.LaunchOptions()
-                                .setHeadless(false)
-                                .setSlowMo(1000)
-                );
+                context = browser.newContext();
             } else {
-                browser = playwright.chromium().launch();
+                context = browser.newContext(
+                        new Browser.NewContextOptions()
+                                .setRecordVideoDir(Paths.get("app/videos/"))
+                );
             }
-            Page page = browser.newPage();
+            Page page = context.newPage();
 
             log.info("--- Login page");
 
@@ -135,6 +140,7 @@ public class XeroImportBankStatementService {
             Locator isFileInTheUploadedFilesList = page.locator("[data-automationid='select-file-control-filelist'] li.xui-fileuploader--fileitem:has-text('" + destinationFile.getFileName() + "')");
             if (!isFileInTheUploadedFilesList.isVisible()) {
                 log.error("File is not in the uploaded files list");
+                context.close();
                 return "Error: file is not in the uploaded files list";
             }
 
@@ -177,8 +183,10 @@ public class XeroImportBankStatementService {
                  * 2 statement lines were imported. 1 was a duplicate.
                  */
                 log.info("--- Result: {}", result);
+                context.close();
                 return result;
             }
+            context.close();
         }
 
         return "Error: unknown";
