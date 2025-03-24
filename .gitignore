@@ -37,4 +37,6 @@ out/
 .vscode/
 
 ### App ###
+.env*
+!.env.example
 app/uploads/

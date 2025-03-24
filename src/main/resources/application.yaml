@@ -5,3 +5,9 @@ spring:
     multipart:
       max-file-size: 10MB
       max-request-size: 10MB
+
+app:
+  enable-ui-mode: ${ENABLE_UI_MODE:true}
+  xero:
+    username: ${XERO_USERNAME}
+    password: ${XERO_PASSWORD}

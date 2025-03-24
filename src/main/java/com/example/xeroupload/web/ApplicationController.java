@@ -1,6 +1,7 @@
 package com.example.xeroupload.web;
 
 import com.example.xeroupload.service.XeroImportBankStatementService;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,8 +23,10 @@ public class ApplicationController {
 
     @PostMapping("/")
     public String handleFileUpload(@RequestParam("file") MultipartFile file,
+                                   @RequestParam("business-name") @NotBlank String businessName,
+                                   @RequestParam("business-bank-account-name") @NotBlank String businessBankAccountName,
                                    RedirectAttributes redirectAttributes) {
-        String result = xeroImportBankStatementService.importCsv(file);
+        String result = xeroImportBankStatementService.importCsv(file, businessName, businessBankAccountName);
 
         redirectAttributes.addFlashAttribute(
                 "message",
