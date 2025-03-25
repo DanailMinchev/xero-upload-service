@@ -147,7 +147,7 @@ public class XeroImportBankStatementService {
             Locator nextButtonOnUploadPage = page.locator("button[data-automationid='wizard-next-step-button']:has-text('Next')").first();
             nextButtonOnUploadPage.click();
 
-            Locator importSettingsTitle = page.locator("h2");
+            Locator importSettingsTitle = page.locator("h2:has-text('Set up transactions for import')");
             if (importSettingsTitle.isVisible()) {
                 configureCsv(page, "Transaction Date");
                 configureCsv(page, "Transaction Amount");
