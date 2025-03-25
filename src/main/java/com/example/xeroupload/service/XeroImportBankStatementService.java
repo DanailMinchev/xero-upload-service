@@ -171,25 +171,20 @@ public class XeroImportBankStatementService {
                 completeImportButton.click();
             }
 
-            Locator resultLocator = page.locator("div#notify01");
-            if (resultLocator.isVisible()) {
-                String result = removeWhitespace(resultLocator.textContent());
-                /*
-                 * Examples:
-                 *
-                 * 1 statement line was imported. 0 were duplicates.
-                 * 0 statement lines were imported. 1 was a duplicate.
-                 * 0 statement lines were imported. 3 were duplicates.
-                 * 2 statement lines were imported. 1 was a duplicate.
-                 */
-                log.info("--- Result: {}", result);
-                context.close();
-                return result;
-            }
+            Locator resultLocator = page.locator("div#notify01:has-text('imported')");
+            String result = removeWhitespace(resultLocator.textContent());
+            /*
+             * Examples:
+             *
+             * 1 statement line was imported. 0 were duplicates.
+             * 0 statement lines were imported. 1 was a duplicate.
+             * 0 statement lines were imported. 3 were duplicates.
+             * 2 statement lines were imported. 1 was a duplicate.
+             */
+            log.info("--- Result: {}", result);
             context.close();
+            return result;
         }
-
-        return "Error: unknown";
     }
 
     private void configureCsv(Page page, String field) {
