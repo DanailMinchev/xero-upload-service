@@ -5,7 +5,7 @@ spring:
   application:
     name: Xero upload service
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
     consumer:
       group-id: example-group-id
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
